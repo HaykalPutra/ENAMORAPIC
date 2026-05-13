@@ -1,0 +1,1 @@
+{"version":2,"defects":{"Tests\\Unit\\PaymentTermServiceTest::test_generate_two_installment_schedule":8,"Tests\\Unit\\PaymentTermServiceTest::test_generate_three_installment_schedule":8},"times":{"Tests\\Unit\\PaymentTermServiceTest::test_generate_two_installment_schedule":2.417,"Tests\\Unit\\PaymentTermServiceTest::test_generate_three_installment_schedule":0.001}}
