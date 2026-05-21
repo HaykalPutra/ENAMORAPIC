@@ -10,18 +10,22 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PaketController;
 use App\Http\Controllers\Admin\BookingAdminController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\LeadController as AdminLeadController;
 use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\DataPesananController;
 use App\Http\Controllers\Admin\ImportController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SearchController;
+use App\Http\Controllers\Admin\WoController as AdminWoController;
 use App\Http\Controllers\Admin2\DashboardAdmin2Controller;
+use App\Http\Controllers\Admin2\LeadController as Admin2LeadController;
 use App\Http\Controllers\Admin2\PegawaiController;
 use App\Http\Controllers\Admin2\FreelanceController;
 use App\Http\Controllers\Admin2\PesananAdmin2Controller;
 use App\Http\Controllers\Admin2\LaporanAdmin2Controller;
 use App\Http\Controllers\Admin2\CustomerAdmin2Controller;
 use App\Http\Controllers\Admin2\SearchAdmin2Controller;
+use App\Http\Controllers\Admin2\WoController as Admin2WoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,6 +65,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // =============================================
 Route::middleware(['auth', 'role:CEO'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/insights', [DashboardController::class, 'insights'])->name('insights');
+    Route::get('/insights/export-pdf', [DashboardController::class, 'exportInsightsPdf'])->name('insights.pdf');
+    Route::get('/insights/export-excel', [DashboardController::class, 'exportInsightsExcel'])->name('insights.excel');
 
     // Paket
     Route::resource('paket', PaketController::class);
@@ -77,6 +84,16 @@ Route::middleware(['auth', 'role:CEO'])->prefix('admin')->name('admin.')->group(
 
     // Customer
     Route::resource('customer', CustomerController::class);
+
+    // Leads (CRM-lite)
+    Route::get('/leads', [AdminLeadController::class, 'index'])->name('leads.index');
+    Route::post('/leads', [AdminLeadController::class, 'store'])->name('leads.store');
+    Route::get('/leads/{lead}', [AdminLeadController::class, 'show'])->name('leads.show');
+    Route::put('/leads/{lead}/status', [AdminLeadController::class, 'updateStatus'])->name('leads.status');
+    Route::post('/leads/{lead}/activities', [AdminLeadController::class, 'storeActivity'])->name('leads.activities.store');
+
+    // Wedding Organizer (WO)
+    Route::resource('wo', AdminWoController::class);
 
     // Laporan
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
@@ -99,6 +116,9 @@ Route::middleware(['auth', 'role:CEO'])->prefix('admin')->name('admin.')->group(
 // =============================================
 Route::middleware(['auth', 'role:ADMIN,CEO'])->prefix('admin2')->name('admin2.')->group(function () {
     Route::get('/', [DashboardAdmin2Controller::class, 'index'])->name('dashboard');
+    Route::get('/insights', [DashboardAdmin2Controller::class, 'insights'])->name('insights');
+    Route::get('/insights/export-pdf', [DashboardAdmin2Controller::class, 'exportInsightsPdf'])->name('insights.pdf');
+    Route::get('/insights/export-excel', [DashboardAdmin2Controller::class, 'exportInsightsExcel'])->name('insights.excel');
 
     // Pegawai
     Route::resource('pegawai', PegawaiController::class);
@@ -115,6 +135,15 @@ Route::middleware(['auth', 'role:ADMIN,CEO'])->prefix('admin2')->name('admin2.')
     Route::get('/customer', [CustomerAdmin2Controller::class, 'index'])->name('customer.index');
     Route::get('/customer/{customer}', [CustomerAdmin2Controller::class, 'show'])->name('customer.show');
     Route::get('/customer/{customer}/booking/{booking}/terms', [CustomerAdmin2Controller::class, 'terms'])->name('customer.terms');
+
+    // Wedding Organizer (WO)
+    Route::get('/wo', [Admin2WoController::class, 'index'])->name('wo.index');
+    Route::get('/wo/{wo}', [Admin2WoController::class, 'show'])->name('wo.show');
+
+    // Leads (CRM-lite)
+    Route::get('/leads', [Admin2LeadController::class, 'index'])->name('leads.index');
+    Route::get('/leads/{lead}', [Admin2LeadController::class, 'show'])->name('leads.show');
+    Route::post('/leads/{lead}/activities', [Admin2LeadController::class, 'storeActivity'])->name('leads.activities.store');
 
     // Laporan
     Route::get('/laporan', [LaporanAdmin2Controller::class, 'index'])->name('laporan');
